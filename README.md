@@ -1,17 +1,7 @@
+# 自用的X86和RockChip固件
 
 
-1.编译固件结束后，自动发送WeTransfer下载地址到Bark
-
-2.自用固件比较大，因此在menuconfig中选择了“gzip”进行压缩，压缩后150兆左右，解压后大小3G左右。注意需要用WinRAR解压，用7zip会解压失败。
-
-3.
-
-
-
-自用的X86和RockChip固件
-
-
-## Tips
+## 说明
 
 - 编译固件结束后，自动发送WeTransfer下载地址到Bark.
 - 自用固件比较大，因此在menuconfig中选择了“gzip”进行压缩，压缩后150兆左右，解压后大小3G左右。注意需要用WinRAR解压，用7zip会解压失败。
@@ -19,6 +9,7 @@
 
 ## 感谢
 
+- [P3TERX's Actions-OpenWrt](https://github.com/P3TERX/Actions-OpenWrt)
 - [Microsoft Azure](https://azure.microsoft.com)
 - [GitHub Actions](https://github.com/features/actions)
 - [OpenWrt](https://github.com/openwrt/openwrt)
