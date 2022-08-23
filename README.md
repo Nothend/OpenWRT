@@ -7,7 +7,7 @@
 - 自用固件比较大，因此在menuconfig中选择了“gzip”进行压缩，压缩后150兆左右，解压后大小3G左右。注意需要用WinRAR解压，用7zip会解压失败。
 - 感谢Lean提供的开源代码和p3terx大神的Action教程。
 
-## 感谢
+## 致谢
 
 - [P3TERX's Actions-OpenWrt](https://github.com/P3TERX/Actions-OpenWrt)
 - [Microsoft Azure](https://azure.microsoft.com)
@@ -20,6 +20,7 @@
 - [Cowtransfer](https://cowtransfer.com)
 - [WeTransfer](https://wetransfer.com/)
 - [Mikubill/transfer](https://github.com/Mikubill/transfer)
+- [shink/bark-action](https://github.com/shink/bark-action)
 - [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 - [ActionsRML/delete-workflow-runs](https://github.com/ActionsRML/delete-workflow-runs)
 - [dev-drprasad/delete-older-releases](https://github.com/dev-drprasad/delete-older-releases)
