@@ -24,6 +24,7 @@ env:
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: rockchip.config
+  DIFF_CONFIG: rockchip_diff.config
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
@@ -76,11 +77,13 @@ jobs:
 
     - name: Load custom configuration
       run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x $DIY_P2_SH
+        # [ -e files ] && mv files openwrt/files
+        # [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        # chmod +x $DIY_P2_SH
+        # cd openwrt
+        # $GITHUB_WORKSPACE/$DIY_P2_SH
         cd openwrt
-        $GITHUB_WORKSPACE/$DIY_P2_SH
+        cat $DIFF_CONFIG >> .config
     - name: Download package
       id: package
       run: |
