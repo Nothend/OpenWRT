@@ -82,6 +82,7 @@ jobs:
         # chmod +x $DIY_P2_SH
         # cd openwrt
         # $GITHUB_WORKSPACE/$DIY_P2_SH
+        [ -e $DIFF_CONFIG ] && mv $DIFF_CONFIG openwrt/$DIFF_CONFIG
         cd openwrt
         cat $DIFF_CONFIG >> .config
     - name: Download package
