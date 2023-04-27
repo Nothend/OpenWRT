@@ -149,11 +149,11 @@ jobs:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
         
-    - name: Upload firmware to cowtransfer
-      id: cowtransfer
-      uses: tvrcgo/cowtransfer-action@master
-      with:
-        files: ${{ env.FIRMWARE }}
+    #- name: Upload firmware to cowtransfer
+    #  id: cowtransfer
+    #  uses: tvrcgo/cowtransfer-action@master
+    #  with:
+    #    files: ${{ env.FIRMWARE }}
         
     #- name: Upload firmware to WeTransfer
     #  id: wetransfer
