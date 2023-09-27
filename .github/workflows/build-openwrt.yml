@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build X86 OpenWRT
+name: Build Lean X86 OpenWRT
 
 on:
   repository_dispatch:
@@ -178,7 +178,7 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        echo "::set-output name=release_tag::x86-$(date +"%Y.%m.%d-%H%M")"
+        echo "::set-output name=release_tag::Lean-x86-$(date +"%Y.%m.%d-%H%M")"
         touch release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         echo "::set-output name=status::success"
