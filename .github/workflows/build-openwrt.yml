@@ -219,6 +219,6 @@ jobs:
         # Message title
         title: OpenWRT
         # Message body
-        body: Openwrt's X86 firmware has been compiled successfully!
+        body: Lean's Openwrt X86 firmware has been compiled successfully!
         isArchive: 1
         # url: ${{ steps.cowtransfer.outputs.url }}
