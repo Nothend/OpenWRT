@@ -189,14 +189,14 @@ jobs:
 
     - name: Upload firmware to release
       id: uploadfirmware
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@master
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
-        files: ${{ env.FIRMWARE }}/openwrt-x86-64-generic-squashfs-combined.img.gz
+        files: ./openwrt/upload/*.*
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
