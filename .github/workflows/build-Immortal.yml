@@ -140,6 +140,10 @@ jobs:
       id: organize
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
+        cd openwrt && mkdir ./upload
+        cp -rf $(find ./bin/targets/ -type f -iname "combined.*") ./upload/
+        cd ./upload
+        ls
         cd openwrt/bin/targets/*/*
         rm -rf packages
         ls
@@ -179,14 +183,16 @@ jobs:
 
     - name: Upload firmware to release
       id: uploadfirmware
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@master
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
-        files: ${{ env.FIRMWARE }}/immortalwrt-x86-64-generic-ext4-combined.img.gz
+        files: ./openwrt/upload/*.*
+        #files: ${{ env.FIRMWARE }}/immortalwrt-x86-64-generic-ext4-combined.img.gz
+        #files: ${{ env.FIRMWARE }}/$(find ./bin/targets/ -type f -iname "combined.*")
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
