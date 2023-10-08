@@ -141,7 +141,7 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
         cd openwrt && mkdir ./upload
-        cp -rf $(find ./bin/targets/ -type f -iname "combined.*") ./upload/
+        cp -rf $(find ./bin/targets/ -type f -iname "*combined.*") ./upload/
         cd ./upload
         ls
         cd openwrt/bin/targets/*/*
