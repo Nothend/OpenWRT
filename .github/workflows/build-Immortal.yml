@@ -67,14 +67,13 @@ jobs:
       run: |
         df -hT $PWD
         #git clone $REPO_URL -b $REPO_BRANCH openwrt
-        git clone -b $REPO_BRANCH --single-branch --filter=blob:none $REPO_URL openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        git clone -b $REPO_BRANCH --single-branch --filter=blob:none $REPO_URL ./openwrt
 
-    - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
-
-    - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
+    - name: Update Feeds
+      run: |
+          cd ./openwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
 
     - name: Load custom configuration
       run: |
@@ -85,7 +84,7 @@ jobs:
         # $GITHUB_WORKSPACE/$DIY_P2_SH
         # do nothing
         [ -e $DIFF_CONFIG ] && mv $DIFF_CONFIG openwrt/$DIFF_CONFIG
-        cd openwrt
+        cd ./openwrt
         cat $DIFF_CONFIG >> .config
 
         make defconfig
@@ -101,13 +100,13 @@ jobs:
     
     - name: Cleanup Toolchain
       run: |
-          cd openwrt
+          cd ./openwrt
           make dirclean
           
     - name: Download package
       id: package
       run: |
-        cd openwrt
+        cd ./openwrt
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -119,7 +118,7 @@ jobs:
     - name: Compile the firmware
       id: compile
       run: |
-        cd openwrt
+        cd ./openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
         echo "::set-output name=status::success"
@@ -140,12 +139,10 @@ jobs:
       id: organize
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        cd openwrt && mkdir ./upload
+        cd ./openwrt && mkdir ./upload
+        rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|buildinfo\|sha256sums\|packages\)$")
         cp -rf $(find ./bin/targets/ -type f -iname "*combined.*") ./upload/
         cd ./upload
-        ls
-        cd openwrt/bin/targets/*/*
-        rm -rf packages
         ls
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -191,8 +188,7 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ./openwrt/upload/*.*
-        #files: ${{ env.FIRMWARE }}/immortalwrt-x86-64-generic-ext4-combined.img.gz
-        #files: ${{ env.FIRMWARE }}/$(find ./bin/targets/ -type f -iname "combined.*")
+
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
