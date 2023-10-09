@@ -68,9 +68,11 @@ jobs:
         df -hT $PWD
         #git clone $REPO_URL -b $REPO_BRANCH openwrt
         git clone --depth=1 -b $REPO_BRANCH --single-branch --filter=blob:none $REPO_URL ./openwrt
+        ls
 
     - name: Update Feeds
       run: |
+          ls
           cd ./openwrt
           ./scripts/feeds update -a
           ./scripts/feeds install -a
