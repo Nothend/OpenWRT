@@ -58,30 +58,27 @@ jobs:
         sudo -E timedatectl set-timezone "Asia/Shanghai"
         sudo -E rm -rf $(sed -n "3{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Depends.txt)
         df -h
-        sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
 
     - name: Clone source code
-      working-directory: /workdir
       run: |
         df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH openwrt
-        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        git clone $REPO_URL -b $REPO_BRANCH ./openwrt
+        ls
 
     - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
-        cd openwrt
+        cd ./openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
-
-    - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
-
+    - name: Update Feeds
+      run: |
+          ls
+          cd ./openwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+          
     - name: Load custom configuration
       run: |
         # [ -e files ] && mv files openwrt/files
@@ -91,7 +88,7 @@ jobs:
         # $GITHUB_WORKSPACE/$DIY_P2_SH
         # do nothing
         [ -e $DIFF_CONFIG ] && mv $DIFF_CONFIG openwrt/$DIFF_CONFIG
-        cd openwrt
+        cd ./openwrt
         cat $DIFF_CONFIG >> .config
 
         make defconfig
@@ -107,13 +104,13 @@ jobs:
     
     - name: Cleanup Toolchain
       run: |
-          cd openwrt
+          cd ./openwrt
           make dirclean
           
     - name: Download package
       id: package
       run: |
-        cd openwrt
+        cd ./openwrt
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -125,7 +122,7 @@ jobs:
     - name: Compile the firmware
       id: compile
       run: |
-        cd openwrt
+        cd ./openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
         echo "::set-output name=status::success"
@@ -146,7 +143,7 @@ jobs:
       id: organize
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        cd openwrt && mkdir ./upload
+        cd ./openwrt && mkdir ./upload
         cp -rf $(find ./bin/targets/ -type f -iname "*combined.*") ./upload/
         cd ./upload
         ls
