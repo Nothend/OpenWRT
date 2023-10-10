@@ -138,10 +138,8 @@ jobs:
       id: organize
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        cd ./openwrt && mkdir ./upload
-        rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|buildinfo\|sha256sums\|packages\)$")
-        cp -rf $(find ./bin/targets/ -type f -iname "*combined.*")  ./upload
-        cd ./upload
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
         ls
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -186,7 +184,7 @@ jobs:
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
-        files: ./openwrt/upload/*.*
+        files: ${{ env.FIRMWARE }}/*combined*.img.gz
 
 
     - name: Delete workflow runs
