@@ -58,22 +58,18 @@ jobs:
         sudo -E timedatectl set-timezone "Asia/Shanghai"
         sudo -E rm -rf $(sed -n "3{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Depends.txt)
         df -h
-        sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
 
     - name: Clone source code
-      working-directory: /workdir
       run: |
         df -hT $PWD
         #git clone $REPO_URL -b $REPO_BRANCH openwrt
-        git clone --depth=1 -b $REPO_BRANCH --single-branch --filter=blob:none $REPO_URL openwrt
+        git clone --depth=1 -b $REPO_BRANCH --single-branch --filter=blob:none $REPO_URL ./openwrt
         ls
 
     - name: Update Feeds
       run: |
           ls
-          cd openwrt
+          cd ./openwrt
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
@@ -102,14 +98,14 @@ jobs:
     
     - name: Cleanup Toolchain
       run: |
-          cd openwrt
+          cd ./openwrt
           ls
           make dirclean
           
     - name: Download package
       id: package
       run: |
-        cd openwrt
+        cd ./openwrt
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -121,7 +117,7 @@ jobs:
     - name: Compile the firmware
       id: compile
       run: |
-        cd openwrt
+        cd ./openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
         echo "::set-output name=status::success"
@@ -142,10 +138,10 @@ jobs:
       id: organize
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        cd openwrt && mkdir upload
+        cd ./openwrt && mkdir ./upload
         rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|buildinfo\|sha256sums\|packages\)$")
-        cp -rf $(find ./bin/targets/ -type f -iname "*combined.*")  /upload
-        cd upload
+        cp -rf $(find ./bin/targets/ -type f -iname "*combined.*")  ./upload
+        cd ./upload
         ls
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -190,7 +186,7 @@ jobs:
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
-        files: /openwrt/upload/*.*
+        files: ./openwrt/upload/*.*
 
 
     - name: Delete workflow runs
