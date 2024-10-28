@@ -191,6 +191,26 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
+   
+        
+    - name: 删除运行记录
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        retain_days: 1
+        keep_minimum_runs: 1
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+     
+
+    - name: 删除自动发布的旧固件
+      uses: dev-drprasad/delete-older-releases@master
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      with:
+        keep_latest: 4
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Bark Action
       uses: shink/bark-action@v2
       with:
@@ -204,28 +224,4 @@ jobs:
         body: ImmortalWrt's X86 firmware has been compiled successfully!
         isArchive: 1
         # url: ${{ steps.cowtransfer.outputs.url }}
-        
-    - name: 删除运行记录
-      uses: Mattraks/delete-workflow-runs@main
-      with:
-        retain_days: 1
-        keep_minimum_runs: 1
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@master
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 8
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: 删除自动发布的旧固件
-      uses: dev-drprasad/delete-older-releases@master
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 4
-        delete_tags: true
-        
 
